@@ -1,0 +1,91 @@
+const MIN_WEIGHT = 200;
+const MAX_WEIGHT = 900;
+const RADIUS = 140;
+const EASE = 0.18;
+
+function initCharacterEffect() {
+    const root = document.querySelector('.mul-text');
+    if (!root) {
+        console.warn('character_effect.js: no .mul-text element found');
+        return;
+    }
+
+    const text = root.textContent.trim().replace(/\s+/g, ' ');
+    root.textContent = '';
+
+    const chars = [...text].map(character => {
+        const span = document.createElement('span');
+        span.className = 'ch';
+        span.textContent = character === ' ' ? '\u00A0' : character;
+        root.appendChild(span);
+
+        return {
+            el: span,
+            centerX: 0,
+            centerY: 0,
+            current: MIN_WEIGHT,
+            target: MIN_WEIGHT
+        };
+    });
+
+    function measure() {
+        chars.forEach(c => {
+            c.el.style.width = '';
+            c.el.style.fontVariationSettings = `"wght" ${MAX_WEIGHT}`;
+        });
+
+        const widths = chars.map(c => c.el.getBoundingClientRect().width);
+        chars.forEach((c, i) => {
+            c.el.style.width = `${widths[i]}px`;
+        });
+
+        chars.forEach(c => {
+            const rect = c.el.getBoundingClientRect();
+            c.centerX = rect.left + window.scrollX + rect.width / 2;
+            c.centerY = rect.top + window.scrollY + rect.height / 2;
+        });
+    }
+
+    let pointerX = null;
+    let pointerY = null;
+
+    root.addEventListener('mousemove', e => {
+        pointerX = e.pageX;
+        pointerY = e.pageY;
+    });
+
+    root.addEventListener('mouseleave', () => {
+        pointerX = null;
+        pointerY = null;
+    });
+
+    function tick() {
+        chars.forEach(c => {
+            if (pointerX === null) {
+                c.target = MIN_WEIGHT;
+            } else {
+                const dx = pointerX - c.centerX;
+                const dy = pointerY - c.centerY;
+                const distance = Math.hypot(dx, dy);
+
+                let influence = Math.max(0, 1 - distance / RADIUS);
+                influence = influence * influence;
+                c.target = MIN_WEIGHT + (MAX_WEIGHT - MIN_WEIGHT) * influence;
+            }
+
+            c.current += (c.target - c.current) * EASE;
+            c.el.style.fontVariationSettings = `"wght" ${c.current.toFixed(1)}`;
+        });
+
+        requestAnimationFrame(tick);
+    }
+
+    document.fonts.ready.then(() => {
+        measure();
+        tick();
+    });
+
+    window.addEventListener('resize', measure);
+}
+
+initCharacterEffect();
