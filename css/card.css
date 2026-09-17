@@ -1,0 +1,128 @@
+.f1 .card-row {
+    justify-self: start;
+    align-self: start;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.tilt-wrap {
+    width: 100px;
+    aspect-ratio: 3 / 4;
+    width: 100px;
+    aspect-ratio: 3 / 4;
+    position: relative;
+}
+
+.tilt-wrap:has(.tilt-card.is-active) {
+    z-index: 10;
+}
+
+.tilt-card {
+    --rx: 0deg;
+    --ry: 0deg;
+    --s: 1;
+    --gx: 50%;
+    --gy: 50%;
+    --hover-scale: 6;
+
+    position: relative;
+    height: 100%;
+    padding: 1.5rem;
+    border-radius: 20px;
+    overflow: hidden;
+
+    transform: perspective(800px) rotateX(var(--rx)) rotateY(var(--ry)) scale(var(--s));
+    transition: transform 0.5s cubic-bezier(.2, .8, .2, 1),
+                box-shadow 0.5s;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+    pointer-events: none;
+}
+
+.tilt-card {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    padding: 0;
+}
+
+.tilt-card p {
+    font-size: clamp(0.0rem, 0.3vw, 2rem);
+}
+
+.card-top0 {
+    background: var(--c0_t);
+    padding: 0.5rem;
+    align-content: end;
+}
+
+.card-top0 p {
+    color: var(--c0_b);
+}
+
+.card-bottom0 {
+    background: var(--c0_b);
+    padding: 0.5rem;
+}
+
+.card-bottom0 p {
+    color: var(--c0_t);
+}
+
+.card-top1 {
+    background: var(--c1_t);
+    padding: 0.5rem;
+    align-content: end;
+}
+
+.card-top1 p {
+    color: var(--c1_b);
+}
+
+.card-bottom1 {
+    background: var(--c1_b);
+    padding: 0.5rem;
+}
+
+.card-bottom1 p {
+    color: var(--c1_t);
+}
+
+.card-top2 {
+    background: var(--c2_t);
+    padding: 0.5rem;
+    align-content: end;
+}
+
+.card-top2 p {
+    color: var(--c2_b);
+}
+
+.card-bottom2 {
+    background: var(--c2_b);
+    padding: 0.5rem;
+}
+
+.card-bottom2 p {
+    color: var(--c2_t);
+}
+
+.tilt-card.is-active {
+    /* transition: transform 0.1s ease-out, box-shadow 0.3s; */
+    /* box-shadow: 0 25px 60px rgba(110, 44, 145, .45); */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+    transition: transform 0.1s ease-out, scale 0.7s cubic-bezier(.65, 0, .35, 1);
+}
+
+.tilt-card p {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.tilt-card.is-active p {
+    opacity: 1;
+    transition: opacity 0.3s ease 0.15s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tilt-card { transition: none; transform: none !important; }
+}

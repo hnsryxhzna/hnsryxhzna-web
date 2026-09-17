@@ -1,31 +1,37 @@
-const MIN_WEIGHT = 200;
+const MIN_WEIGHT = 400;
 const MAX_WEIGHT = 900;
 const RADIUS = 140;
 const EASE = 0.18;
 
-function initCharacterEffect() {
-    const root = document.querySelector('.mul-text');
-    if (!root) {
-        console.warn('character_effect.js: no .mul-text element found');
-        return;
-    }
-
+function initCharacterEffect(root) {
     const text = root.textContent.trim().replace(/\s+/g, ' ');
     root.textContent = '';
 
-    const chars = [...text].map(character => {
-        const span = document.createElement('span');
-        span.className = 'ch';
-        span.textContent = character === ' ' ? '\u00A0' : character;
-        root.appendChild(span);
+    const chars = [];
 
-        return {
-            el: span,
-            centerX: 0,
-            centerY: 0,
-            current: MIN_WEIGHT,
-            target: MIN_WEIGHT
-        };
+    text.split(' ').forEach((word, wordIndex) => {
+        if (wordIndex > 0) {
+            root.appendChild(document.createTextNode(' '));
+        }
+
+        const wordSpan = document.createElement('span');
+        wordSpan.className = 'word';
+        root.appendChild(wordSpan);
+
+        for (const character of word) {
+            const span = document.createElement('span');
+            span.className = 'ch';
+            span.textContent = character;
+            wordSpan.appendChild(span);
+
+            chars.push({
+                el: span,
+                centerX: 0,
+                centerY: 0,
+                current: MIN_WEIGHT,
+                target: MIN_WEIGHT
+            });
+        }
     });
 
     function measure() {
@@ -64,10 +70,7 @@ function initCharacterEffect() {
             if (pointerX === null) {
                 c.target = MIN_WEIGHT;
             } else {
-                const dx = pointerX - c.centerX;
-                const dy = pointerY - c.centerY;
-                const distance = Math.hypot(dx, dy);
-
+                const distance = Math.hypot(pointerX - c.centerX, pointerY - c.centerY);
                 let influence = Math.max(0, 1 - distance / RADIUS);
                 influence = influence * influence;
                 c.target = MIN_WEIGHT + (MAX_WEIGHT - MIN_WEIGHT) * influence;
@@ -88,4 +91,8 @@ function initCharacterEffect() {
     window.addEventListener('resize', measure);
 }
 
-initCharacterEffect();
+const roots = document.querySelectorAll('.mul-text');
+if (roots.length === 0) {
+    console.warn('character_effect.js: no .mul-text element found');
+}
+roots.forEach(initCharacterEffect);

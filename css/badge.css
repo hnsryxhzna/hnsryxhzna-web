@@ -1,0 +1,22 @@
+.badge {
+    position: fixed;
+    top: 3rem;
+    right: 3rem;
+    width: 140px;
+    height: 140px;
+    animation: spin 16s linear infinite;
+    cursor: default;
+    user-select: none;
+    z-index: 10;
+}
+
+.badge text {
+    fill: #F06AAE;
+    font-size: 13.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    /* font-family: inherit; */
+    font-family: var(--font-body);
+    cursor: default;
+    user-select: none;
+}
