@@ -289,7 +289,7 @@ Other Elements
 .stack1 {
     display: grid;
     width: fit-content;
-    max-width: 40rem;
+    max-width: 50rem;
     gap: 1rem;
 }
 
